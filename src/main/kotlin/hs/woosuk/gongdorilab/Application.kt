@@ -8,4 +8,5 @@ class GongdoriLabBackendApplication
 
 fun main(args: Array<String>) {
     runApplication<GongdoriLabBackendApplication>(*args)
+    println("가나다라마바사")
 }

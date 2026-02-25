@@ -16,6 +16,6 @@ class TestHelloController {
     @GetMapping("/hello/{name}")
     fun hello(
         @PathVariable name: String,
-        @RequestParam age: Int
+        @RequestParam age: Int // ? 단위
     ): String = "Hello $name! I'm $age"
 }

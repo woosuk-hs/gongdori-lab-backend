@@ -1,5 +1,18 @@
 version: "3.8"
 services:
+  backend:
+    build: .
+    container_name: backend-container
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
   mysql:
     image: mysql:latest
     container_name: mysql-container
@@ -8,5 +21,11 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
+    restart: always
+
+volumes:
+  mysql-data:
