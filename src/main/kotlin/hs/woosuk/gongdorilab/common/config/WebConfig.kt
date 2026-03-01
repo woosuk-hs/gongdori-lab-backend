@@ -1,4 +1,4 @@
-package hs.woosuk.gongdorilab.config
+package hs.woosuk.gongdorilab.common.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
@@ -9,7 +9,10 @@ class WebConfig : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("https://gongdori.site")
+            .allowedOrigins(
+                "https://gongdori.site",
+                "http://localhost:5173"
+            )
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("*")
             .allowCredentials(true)

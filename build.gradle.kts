@@ -24,6 +24,7 @@ repositories {
     mavenCentral()
 }
 
+val jwtVersion = "0.13.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -32,13 +33,18 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-core") // 12.0.2<
     implementation("org.flywaydb:flyway-mysql")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
     runtimeOnly("com.mysql:mysql-connector-j")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    implementation("io.jsonwebtoken:jjwt-impl:$jwtVersion")
+    implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
 }
 
 kotlin {

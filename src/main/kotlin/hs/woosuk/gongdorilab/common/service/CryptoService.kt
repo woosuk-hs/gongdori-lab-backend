@@ -1,6 +1,6 @@
-package hs.woosuk.gongdorilab.service
+package hs.woosuk.gongdorilab.common.service
 
-import io.github.cdimascio.dotenv.Dotenv
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.util.*
@@ -10,7 +10,7 @@ import javax.crypto.spec.SecretKeySpec
 
 @Service
 class CryptoService(
-    dotenv: Dotenv,
+    @Value($$"${AES_KEY}") private val aesKey: String
 ) {
 
     private val ALGO = "AES/CBC/PKCS5Padding"
@@ -19,7 +19,7 @@ class CryptoService(
 
     init {
         // key.padEnd(16, '0').substring(0, 16).toByteArray()
-        val keyBytes = (dotenv["AES_KEY"] ?: error("AES_KEY is Null"))
+        val keyBytes = (aesKey)
             .padEnd(16, '0')
             .substring(0, 16)
             .toByteArray()

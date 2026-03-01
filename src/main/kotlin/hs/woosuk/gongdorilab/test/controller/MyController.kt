@@ -1,6 +1,6 @@
 package hs.woosuk.gongdorilab.test.controller
 
-import hs.woosuk.gongdorilab.service.CryptoService
+import hs.woosuk.gongdorilab.common.service.CryptoService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 

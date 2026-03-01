@@ -8,7 +8,14 @@ spring:
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    open-in-view: false
+
 #  flyway:
 #    enabled: true
 #    baseline-on-migrate: true
 #    locations: classpath:db/migration
+
+# 각종 설정값 .donenv 대체
+
+AES_KEY: ${AES_KEY}

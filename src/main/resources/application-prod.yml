@@ -5,7 +5,7 @@ spring:
       ddl-auto: validate
     show-sql: false
 
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: true
+#  flyway:
+#    enabled: true
+#    baseline-on-migrate: true
+#    validate-on-migrate: true
