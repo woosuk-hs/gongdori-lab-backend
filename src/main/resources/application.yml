@@ -9,13 +9,19 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     open-in-view: false
-
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true
-#    locations: classpath:db/migration
+    show-sql: true
 
 # 각종 설정값 .donenv 대체
-
 AES_KEY: ${AES_KEY}
+
+jwt:
+  key: ${JWT_KEY}
+  access: ${JWT_ACCESS}
+  refresh: ${JWT_REFRESH}
+
+remember_key: ${REMEMBER_KEY}

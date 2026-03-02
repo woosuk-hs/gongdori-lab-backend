@@ -26,13 +26,10 @@ repositories {
 
 val jwtVersion = "0.13.0"
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
-    implementation("org.flywaydb:flyway-core") // 12.0.2<
-    implementation("org.flywaydb:flyway-mysql")
     implementation("org.springframework.boot:spring-boot-starter-security")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

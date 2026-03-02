@@ -1,8 +1,13 @@
 package hs.woosuk.gongdorilab.domain.member.entity
 
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
-@Entity
+@Entity(name = "members")
+@EntityListeners(AuditingEntityListener::class)
 class MemberEntity(
 
     @Id
@@ -11,23 +16,24 @@ class MemberEntity(
 
     @Column(unique = true)
     val username: String,
-    val password: String,
+
+    var password: String,
+
+    val studentNumber: String?,
+
+    var name: String,
 
     @Enumerated(EnumType.STRING)
-    val role: MemberRole,
+    var role: MemberRole,
 
     @Enumerated(EnumType.STRING)
-    val position: MemberPosition
+    var type: MemberType,
 
-) {
-    companion object {
-        fun create(username: String, password: String): MemberEntity {
-            return MemberEntity(
-                username = username,
-                password = password,
-                role = MemberRole.MEMBER,
-                position = MemberPosition.STUDENT
-            )
-        }
-    }
-}
+    @CreatedDate
+    @Column(updatable = false)
+    val createdAt: LocalDateTime,
+
+    @LastModifiedDate
+    var updatedAt: LocalDateTime
+
+)
