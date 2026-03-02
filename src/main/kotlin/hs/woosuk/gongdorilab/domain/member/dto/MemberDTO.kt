@@ -1,7 +1,7 @@
 package hs.woosuk.gongdorilab.domain.member.dto
 
-import hs.woosuk.gongdorilab.domain.member.entity.MemberType
 import hs.woosuk.gongdorilab.domain.member.entity.MemberRole
+import hs.woosuk.gongdorilab.domain.member.entity.MemberType
 import java.time.LocalDateTime
 
 data class MemberCreateDTO(
@@ -10,6 +10,7 @@ data class MemberCreateDTO(
     val name: String,
     val studentNumber: String = "",
     val type: MemberType = MemberType.STUDENT,
+    val code: String = ""
 )
 
 data class MemberRequestDTO(

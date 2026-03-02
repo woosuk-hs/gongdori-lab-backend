@@ -2,6 +2,7 @@ package hs.woosuk.gongdorilab.domain.auth.service
 
 import hs.woosuk.gongdorilab.domain.jwt.dto.TokenDTO
 import hs.woosuk.gongdorilab.domain.jwt.service.TokenService
+import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.service.MemberService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -41,5 +42,19 @@ class AuthService(
 
         val member = tokenService.findTokenByRefreshToken(refreshToken)!!.member
         return tokenService.generateTokens(member)
+    }
+
+    @Transactional
+    fun join(dto: MemberCreateDTO): Long {
+//        val invite = inviteCodeRepository.findByCode(inviteCode)
+//            ?: throw IllegalArgumentException("Invalid invite code")
+//
+//        if (invite.expiredAt.isBefore(LocalDateTime.now())) {
+//            throw IllegalArgumentException("Invite code expired")
+//        }
+        val memberId = memberService.createMember(dto)
+        // inviteCodeRepository.delete(invite)
+
+        return memberId
     }
 }

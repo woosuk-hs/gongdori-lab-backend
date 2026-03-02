@@ -6,12 +6,7 @@ import hs.woosuk.gongdorilab.domain.member.mapping.toResponseDTO
 import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
 import hs.woosuk.gongdorilab.domain.member.service.MemberService
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/member")
@@ -47,4 +42,10 @@ class MemberController (
     fun getMemberByUsername(@PathVariable username: String): MemberResponseDTO? {
         return memberService.findByUsername(username)?.toResponseDTO()
     }
+
+//    @PostMapping("/delete/{id}")
+//    fun deleteMember(@PathVariable id: Long): Long {
+//        memberService.deleteMember(id)
+//        return id
+//    }
 }

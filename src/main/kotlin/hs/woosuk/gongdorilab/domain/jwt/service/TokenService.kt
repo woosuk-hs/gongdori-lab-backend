@@ -123,6 +123,7 @@ class TokenService(
 
     @Transactional
     fun deleteToken(tokenEntity: TokenEntity) {
+
         tokenRepository.delete(tokenEntity)
     }
 
