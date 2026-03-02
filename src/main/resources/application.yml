@@ -23,5 +23,3 @@ jwt:
   key: ${JWT_KEY}
   access: ${JWT_ACCESS}
   refresh: ${JWT_REFRESH}
-
-remember_key: ${REMEMBER_KEY}
