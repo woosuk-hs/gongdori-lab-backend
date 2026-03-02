@@ -32,7 +32,7 @@ data class MemberResponseDTO(
     val studentNumber: String?,
     val name: String,
     val role: MemberRole,
-    val type: MemberType,
+    val type: String, // MemberType,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

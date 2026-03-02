@@ -21,7 +21,7 @@ class MemberController (
             username = member.username,
             name = member.name,
             role = member.role,
-            type = member.type,
+            type = member.type.description,
             studentNumber = member.studentNumber,
             createdAt = member.createdAt,
             updatedAt = member.updatedAt,

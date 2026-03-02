@@ -21,7 +21,7 @@ fun MemberEntity.toResponseDTO(): MemberResponseDTO = MemberResponseDTO(
     studentNumber = this.studentNumber,
     name = this.name,
     role = this.role,
-    type = this.type,
+    type = this.type.description,
     createdAt = this.createdAt,
     updatedAt = this.updatedAt
 )
