@@ -9,7 +9,6 @@ import hs.woosuk.gongdorilab.domain.member.mapping.toEntity
 import hs.woosuk.gongdorilab.domain.member.mapping.toResponseDTO
 import hs.woosuk.gongdorilab.domain.member.repository.MemberRepository
 import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
