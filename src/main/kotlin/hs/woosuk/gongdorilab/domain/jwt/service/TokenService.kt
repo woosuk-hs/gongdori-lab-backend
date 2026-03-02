@@ -62,11 +62,18 @@ class TokenService(
             .signWith(secretKey)
             .compact()
 
-    private fun createRefreshToken(): String =
-        Jwts.builder()
-            .expiration(Date(System.currentTimeMillis() + refreshValidTime))
+//    private fun createRefreshToken(): String =
+//        Jwts.builder()
+//            .expiration(Date(System.currentTimeMillis() + refreshValidTime))
+//            .signWith(secretKey)
+//            .compact()
+    private fun createRefreshToken(rememberMe: Boolean): String {
+        val validTime = if (rememberMe) 60 * 60 * 24 * 30 * 1000 else refreshValidTime.toLong()
+        return Jwts.builder()
+            .expiration(Date(System.currentTimeMillis() + validTime))
             .signWith(secretKey)
             .compact()
+    }
 
     @Transactional
     fun saveOrUpdateRefreshToken(member: MemberEntity, refreshToken: String) {
@@ -79,12 +86,18 @@ class TokenService(
     }
 
     @Transactional
-    fun generateTokens(member: MemberEntity): TokenDTO {
+    fun generateTokens(member: MemberEntity, rememberMe: Boolean = false): TokenDTO {
         val accessToken = createAccessToken(member)
-        val refreshToken = createRefreshToken()
+        val refreshToken = createRefreshToken(rememberMe)
         saveOrUpdateRefreshToken(member, refreshToken)
         return TokenDTO(accessToken, refreshToken)
     }
+//    fun generateTokens(member: MemberEntity): TokenDTO {
+//        val accessToken = createAccessToken(member)
+//        val refreshToken = createRefreshToken()
+//        saveOrUpdateRefreshToken(member, refreshToken)
+//        return TokenDTO(accessToken, refreshToken)
+//    }
 
     fun validateAccessToken(token: String): Boolean {
         return try {

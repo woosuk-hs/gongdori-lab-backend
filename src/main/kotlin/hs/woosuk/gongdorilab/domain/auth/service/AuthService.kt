@@ -18,7 +18,17 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun login(username: String, password: String): TokenDTO {
+//    fun login(username: String, password: String): TokenDTO {
+//        val member = memberService.findByUsername(username)
+//            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "멤버가 존재하지 않습니다.")
+//
+//        if (!passwordEncoder.matches(password, member.password)) {
+//            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다.")
+//        }
+//
+//        return tokenService.generateTokens(member)
+//    }
+    fun login(username: String, password: String, rememberMe: Boolean): TokenDTO {
         val member = memberService.findByUsername(username)
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "멤버가 존재하지 않습니다.")
 
@@ -26,7 +36,7 @@ class AuthService(
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다.")
         }
 
-        return tokenService.generateTokens(member)
+        return tokenService.generateTokens(member, rememberMe)
     }
 
     fun logout(username: String) {
