@@ -1,20 +1,21 @@
 package hs.woosuk.gongdorilab.domain.member.service
 
+import hs.woosuk.gongdorilab.common.mapper.findByIdOrThrow
 import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberUpdateDTO
 import hs.woosuk.gongdorilab.domain.member.entity.MemberEntity
 import hs.woosuk.gongdorilab.domain.member.entity.MemberRole
-import hs.woosuk.gongdorilab.domain.member.mapping.toEntity
-import hs.woosuk.gongdorilab.domain.member.mapping.toResponseDTO
+import hs.woosuk.gongdorilab.domain.member.mapper.toEntity
+import hs.woosuk.gongdorilab.domain.member.mapper.toResponseDTO
 import hs.woosuk.gongdorilab.domain.member.repository.MemberRepository
 import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 @Transactional(readOnly = true)
@@ -27,7 +28,7 @@ class MemberService(
         memberRepository.findAll().map { it.toResponseDTO() }
 
     fun findById(id: Long): MemberResponseDTO? =
-        memberRepository.findById(id).orElse(null)?.toResponseDTO()
+        memberRepository.findByIdOrNull(id)?.toResponseDTO()
 
     fun findByUsername(username: String): MemberEntity? =
         memberRepository.findByUsername(username)
@@ -46,8 +47,7 @@ class MemberService(
 
     @Transactional
     fun updateMember(id: Long, dto: MemberUpdateDTO): MemberResponseDTO {
-        val member = memberRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Member not found") }
+        val member = memberRepository.findByIdOrThrow(id)
 
         dto.password?.let { member.password = passwordEncoder.encode(it)!! }
         dto.name?.let { member.name = it }

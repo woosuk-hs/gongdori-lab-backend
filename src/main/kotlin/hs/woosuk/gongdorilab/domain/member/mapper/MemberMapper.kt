@@ -1,4 +1,4 @@
-package hs.woosuk.gongdorilab.domain.member.mapping
+package hs.woosuk.gongdorilab.domain.member.mapper
 
 import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO

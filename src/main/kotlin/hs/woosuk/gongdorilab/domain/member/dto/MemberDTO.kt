@@ -21,10 +21,10 @@ data class MemberRequestDTO(
     val type: MemberType
 )
 
-data class MemberLoginDTO(
-    val username: String,
-    val password: String
-)
+//data class MemberLoginDTO(
+//    val username: String,
+//    val password: String
+//)
 
 data class MemberResponseDTO(
     val id: Long,

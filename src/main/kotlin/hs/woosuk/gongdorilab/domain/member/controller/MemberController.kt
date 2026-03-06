@@ -2,7 +2,7 @@ package hs.woosuk.gongdorilab.domain.member.controller
 
 import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO
-import hs.woosuk.gongdorilab.domain.member.mapping.toResponseDTO
+import hs.woosuk.gongdorilab.domain.member.mapper.toResponseDTO
 import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
 import hs.woosuk.gongdorilab.domain.member.service.MemberService
 import org.springframework.security.core.annotation.AuthenticationPrincipal
