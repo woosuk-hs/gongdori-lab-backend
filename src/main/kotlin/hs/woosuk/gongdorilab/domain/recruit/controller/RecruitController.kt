@@ -28,7 +28,7 @@ class RecruitController(
     fun index(): List<RecruitResponseDTO> =
         recruitService.findAll().map { it.toResponseDTO() }
 
-    @PatchMapping("/status{studentId}")
+    @PatchMapping("/{studentId}/status")
     fun updateStatusByStudentId(
         @PathVariable studentId: String,
         @RequestBody dto: RecruitUpdateDTO
