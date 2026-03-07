@@ -2,9 +2,13 @@ package hs.woosuk.gongdorilab.common.config
 
 import hs.woosuk.gongdorilab.common.filter.JwtAuthenticationFilter
 import hs.woosuk.gongdorilab.domain.jwt.service.TokenService
+import hs.woosuk.gongdorilab.domain.member.entity.MemberRole
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -22,6 +26,7 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http
+            .cors {  }
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
@@ -41,11 +46,22 @@ class SecurityConfig(
 
             .authorizeHttpRequests {
                 it
-                    // .requestMatchers("/member/me").authenticated()
+                    // 인증 없이 접근 가능
                     .requestMatchers("/auth/**").permitAll()
-                    // .anyRequest().authenticated()
-                    .anyRequest().permitAll()
+                    .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/recruit/{studentId}").permitAll()
 
+                    // 로그인 필요
+                    .requestMatchers("/members/me").authenticated()
+                    .requestMatchers(HttpMethod.PATCH, "/members/me").authenticated()
+
+                    // 관리자 전용
+                    .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH, "/recruit/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/recruit").hasRole("ADMIN")
+
+                    .anyRequest().authenticated()
             }
 
             .addFilterBefore(
@@ -57,4 +73,10 @@ class SecurityConfig(
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
+    @Bean
+    fun roleHierarchy(): RoleHierarchy =
+        RoleHierarchyImpl.withRolePrefix("ROLE_")
+            .role(MemberRole.ADMIN.name).implies(MemberRole.MEMBER.name)
+            .build()
 }

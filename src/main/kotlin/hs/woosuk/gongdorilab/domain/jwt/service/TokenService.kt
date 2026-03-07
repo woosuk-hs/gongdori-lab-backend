@@ -30,113 +30,118 @@ class TokenService(
     private lateinit var key: String
 
     @Value($$"${jwt.access}")
-    private var accessValidTime: Int = 86400000
+    private var accessValidTime: Long = 86400000
 
     @Value($$"${jwt.refresh}")
-    private var refreshValidTime: Int = 604800000
+    private var refreshValidTime: Long = 604800000
 
     private lateinit var secretKey: SecretKey
 
     @PostConstruct
     fun init() {
-        secretKey = SecretKeySpec(key.toByteArray(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().algorithm)
+        secretKey = SecretKeySpec(
+            key.toByteArray(StandardCharsets.UTF_8),
+            Jwts.SIG.HS256.key().build().algorithm
+        )
     }
-
-    fun findTokenByMember(memberEntity: MemberEntity): TokenEntity? =
-        tokenRepository.findByMember(memberEntity)
-
-    fun findTokenByUsername(username: String): TokenEntity? {
-        val member = memberRepository.findByUsername(username) ?: return null
-        return findTokenByMember(member)
-    }
-
-    fun findTokenByRefreshToken(refreshToken: String): TokenEntity? =
-        tokenRepository.findByRefreshToken(refreshToken)
 
     private fun createAccessToken(member: MemberEntity): String =
         Jwts.builder()
             .subject(member.username)
-//            .claim("username", member.username)
+            .claim("id", member.id)
             .claim("role", member.role.name)
             .expiration(Date(System.currentTimeMillis() + accessValidTime))
             .signWith(secretKey)
             .compact()
 
-//    private fun createRefreshToken(): String =
-//        Jwts.builder()
-//            .expiration(Date(System.currentTimeMillis() + refreshValidTime))
-//            .signWith(secretKey)
-//            .compact()
-    private fun createRefreshToken(rememberMe: Boolean): String {
-        val validTime = if (rememberMe) 60 * 60 * 24 * 30 * 1000 else refreshValidTime.toLong()
+    private fun createRefreshToken(member: MemberEntity, rememberMe: Boolean): String {
+        val validTime =
+            if (rememberMe) 1000L * 60 * 60 * 24 * 30
+            else refreshValidTime
+
         return Jwts.builder()
+            .subject(member.username)
             .expiration(Date(System.currentTimeMillis() + validTime))
             .signWith(secretKey)
             .compact()
     }
 
     @Transactional
+    fun generateTokens(member: MemberEntity, rememberMe: Boolean = false): TokenDTO {
+        val accessToken = createAccessToken(member)
+        val refreshToken = createRefreshToken(member, rememberMe)
+
+        saveOrUpdateRefreshToken(member, refreshToken)
+
+        return TokenDTO(
+            access = accessToken,
+            refresh = refreshToken
+        )
+    }
+
+    fun findTokenByMember(member: MemberEntity): TokenEntity? =
+        tokenRepository.findByMember(member)
+
+    fun findTokenByRefreshToken(refreshToken: String): TokenEntity? =
+        tokenRepository.findByRefreshToken(refreshToken)
+
+    @Transactional
     fun saveOrUpdateRefreshToken(member: MemberEntity, refreshToken: String) {
-        val tokenEntity = findTokenByMember(member)
-        if (tokenEntity == null) {
-            tokenRepository.save(TokenEntity(member = member, refreshToken = refreshToken))
+        val token = findTokenByMember(member)
+
+        if (token == null) {
+            tokenRepository.save(
+                TokenEntity(
+                    member = member,
+                    refreshToken = refreshToken
+                )
+            )
         } else {
-            tokenEntity.updateToken(refreshToken)
+            token.updateToken(refreshToken)
         }
     }
 
     @Transactional
-    fun generateTokens(member: MemberEntity, rememberMe: Boolean = false): TokenDTO {
-        val accessToken = createAccessToken(member)
-        val refreshToken = createRefreshToken(rememberMe)
-        saveOrUpdateRefreshToken(member, refreshToken)
-        return TokenDTO(accessToken, refreshToken)
+    fun deleteToken(member: MemberEntity) {
+        findTokenByMember(member)?.let {
+            tokenRepository.delete(it)
+        }
     }
-//    fun generateTokens(member: MemberEntity): TokenDTO {
-//        val accessToken = createAccessToken(member)
-//        val refreshToken = createRefreshToken()
-//        saveOrUpdateRefreshToken(member, refreshToken)
-//        return TokenDTO(accessToken, refreshToken)
-//    }
 
-    fun validateAccessToken(token: String): Boolean {
-        return try {
+    fun validateToken(token: String): Boolean =
+        try {
             parseToken(token)
             true
         } catch (e: Exception) {
             false
         }
-    }
 
-    private fun parseToken(token: String): Claims = Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .payload
+    private fun parseToken(token: String): Claims =
+        Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload
 
-    fun getUsernameFromToken(token: String): String =
+    fun getUsername(token: String): String =
         parseToken(token).subject
-        // parseToken(token).get("username", String::class.java)
 
-    fun getRoleFromToken(token: String): String =
+    fun getRole(token: String): String =
         parseToken(token).get("role", String::class.java)
 
-    fun refreshTokenExists(refreshToken: String): Boolean =
-        findTokenByRefreshToken(refreshToken) != null
-
     fun getAuthentication(token: String): Authentication {
-        val username = getUsernameFromToken(token)
-        val memberEntity = memberRepository.findByUsername(username)
+
+        val username = getUsername(token)
+
+        val member = memberRepository.findByUsername(username)
             ?: throw IllegalArgumentException("Member not found")
-        val memberDetails = MemberDetails(memberEntity)
 
-        return UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.authorities)
+        val memberDetails = MemberDetails(member)
+
+        return UsernamePasswordAuthenticationToken(
+            memberDetails,
+            null,
+            memberDetails.authorities
+        )
     }
-
-    @Transactional
-    fun deleteToken(tokenEntity: TokenEntity) {
-
-        tokenRepository.delete(tokenEntity)
-    }
-
 }

@@ -15,11 +15,11 @@ class MemberEntity(
     var id: Long? = null,
 
     @Column(unique = true)
-    val username: String,
+    var username: String,
 
     var password: String,
 
-    val studentNumber: String?,
+    val studentId: String?,
 
     var name: String,
 
@@ -28,6 +28,8 @@ class MemberEntity(
 
     @Enumerated(EnumType.STRING)
     var type: MemberType,
+
+    var github: String?,
 
     @CreatedDate
     @Column(updatable = false)

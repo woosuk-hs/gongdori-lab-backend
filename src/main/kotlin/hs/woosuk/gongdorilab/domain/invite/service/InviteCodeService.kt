@@ -1,7 +1,6 @@
 package hs.woosuk.gongdorilab.domain.invite.service
 
 import hs.woosuk.gongdorilab.domain.invite.dto.InviteCodeCreateDTO
-import hs.woosuk.gongdorilab.domain.invite.dto.InviteCodeResponseDTO
 import hs.woosuk.gongdorilab.domain.invite.entity.InviteCodeEntity
 import hs.woosuk.gongdorilab.domain.invite.repository.InviteCodeRepository
 import org.springframework.stereotype.Service
@@ -15,23 +14,14 @@ class InviteCodeService(
     private val inviteCodeRepository: InviteCodeRepository
 ) {
 
-    fun createInviteCode(dto: InviteCodeCreateDTO): InviteCodeResponseDTO {
+    fun createInviteCode(dto: InviteCodeCreateDTO): InviteCodeEntity {
         val code = UUID.randomUUID().toString().replace("-", "").substring(0, 12)
-        val expiredAt = LocalDateTime.now().plusHours(dto.validHours)
-
         val entity = InviteCodeEntity(
             code = code,
             role = dto.role,
-            expiredAt = expiredAt
+            expiredAt = LocalDateTime.now().plusHours(dto.validHours)
         )
-
-        val saved = inviteCodeRepository.save(entity)
-        return InviteCodeResponseDTO(
-            id = saved.id!!,
-            code = saved.code,
-            role = saved.role,
-            expiredAt = saved.expiredAt
-        )
+        return inviteCodeRepository.save(entity)
     }
 
     fun validateInviteCode(code: String): InviteCodeEntity {

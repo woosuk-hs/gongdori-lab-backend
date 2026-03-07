@@ -3,7 +3,7 @@ package hs.woosuk.gongdorilab.domain.jwt.entity
 import hs.woosuk.gongdorilab.domain.member.entity.MemberEntity
 import jakarta.persistence.*
 
-@Entity(name = "jwt_refresh")
+@Entity(name = "jwt")
 class TokenEntity(
 
     @Id

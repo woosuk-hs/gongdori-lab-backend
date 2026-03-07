@@ -1,9 +1,9 @@
-package hs.woosuk.gongdorilab.domain.joinform.entity
+package hs.woosuk.gongdorilab.domain.recruit.entity
 
 import jakarta.persistence.*
 
-@Entity(name = "join_form")
-class JoinFormEntity(
+@Entity(name = "recruit")
+class RecruitEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,7 @@ class JoinFormEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var status: JoinFormStatus = JoinFormStatus.PENDING
-) {
-    fun updateStatus(status: JoinFormStatus) {
-        this.status = status
-    }
-}
+    var status: RecruitStatus = RecruitStatus.PENDING,
+
+    var inviteCode: String? = null
+)

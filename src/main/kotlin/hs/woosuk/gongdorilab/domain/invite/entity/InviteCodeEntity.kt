@@ -4,7 +4,7 @@ import hs.woosuk.gongdorilab.domain.member.entity.MemberRole
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
-@Entity(name = "invite_codes")
+@Entity(name = "invite")
 class InviteCodeEntity(
 
     @Id

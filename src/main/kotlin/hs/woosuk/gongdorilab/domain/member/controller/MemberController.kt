@@ -1,7 +1,7 @@
 package hs.woosuk.gongdorilab.domain.member.controller
 
-import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO
+import hs.woosuk.gongdorilab.domain.member.dto.MemberUpdateDTO
 import hs.woosuk.gongdorilab.domain.member.mapper.toResponseDTO
 import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
 import hs.woosuk.gongdorilab.domain.member.service.MemberService
@@ -14,38 +14,39 @@ class MemberController (
     private val memberService: MemberService
 ) {
 
+    @GetMapping
+    fun getMembers(): List<MemberResponseDTO> {
+        return memberService.findAll().map { it.toResponseDTO() }
+    }
+
     @GetMapping("/me")
     fun me(@AuthenticationPrincipal member: MemberDetails): MemberResponseDTO {
-        return MemberResponseDTO(
-            id = member.id,
-            username = member.username,
-            name = member.name,
-            role = member.role,
-            type = member.type.description,
-            studentNumber = member.studentNumber,
-            createdAt = member.createdAt,
-            updatedAt = member.updatedAt,
-        )
+        return member.member.toResponseDTO()
     }
 
-    @PostMapping("/join")
-    fun join(@RequestBody memberCreateDTO: MemberCreateDTO): Long {
-        return memberService.createMember(memberCreateDTO)
+    @GetMapping("/{id}")
+    fun getMember(@PathVariable id: Long): MemberResponseDTO {
+        return memberService.findById(id).toResponseDTO()
     }
 
-    @GetMapping("/list")
-    fun getMembers(): List<MemberResponseDTO> {
-        return memberService.findAll()
+    @GetMapping("/student/{studentId}")
+    fun getMemberByStudentId(@PathVariable studentId: String): MemberResponseDTO {
+        return memberService.findByStudentId(studentId).toResponseDTO()
     }
 
-    @GetMapping("/{username}")
-    fun getMemberByUsername(@PathVariable username: String): MemberResponseDTO? {
-        return memberService.findByUsername(username)?.toResponseDTO()
+    @PatchMapping("/{id}")
+    fun updateMember(@PathVariable id: Long, @RequestBody dto: MemberUpdateDTO): MemberResponseDTO {
+        return memberService.updateMember(id, dto)
     }
 
-//    @PostMapping("/delete/{id}")
-//    fun deleteMember(@PathVariable id: Long): Long {
-//        memberService.deleteMember(id)
-//        return id
-//    }
+    @PatchMapping("/me")
+    fun updateMe(@AuthenticationPrincipal member: MemberDetails, @RequestBody dto: MemberUpdateDTO): MemberResponseDTO {
+        return memberService.updateMember(member.member.id!!, dto)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteMember(@PathVariable id: Long) {
+        memberService.deleteMember(id)
+    }
+
 }

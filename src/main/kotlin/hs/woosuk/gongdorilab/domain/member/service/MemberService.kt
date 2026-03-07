@@ -1,6 +1,5 @@
 package hs.woosuk.gongdorilab.domain.member.service
 
-import hs.woosuk.gongdorilab.common.mapper.findByIdOrThrow
 import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberUpdateDTO
@@ -24,48 +23,69 @@ class MemberService(
     private val passwordEncoder: PasswordEncoder
 ) : UserDetailsService {
 
-    fun findAll(): List<MemberResponseDTO> =
-        memberRepository.findAll().map { it.toResponseDTO() }
+    fun findAll(): List<MemberEntity> =
+        memberRepository.findAll()
 
-    fun findById(id: Long): MemberResponseDTO? =
-        memberRepository.findByIdOrNull(id)?.toResponseDTO()
+    fun findById(id: Long): MemberEntity =
+        memberRepository.findByIdOrNull(id)
+            ?: throw IllegalStateException("Member not found")
 
-    fun findByUsername(username: String): MemberEntity? =
+    fun findByUsername(username: String): MemberEntity =
         memberRepository.findByUsername(username)
+            ?: throw IllegalArgumentException("Username $username not found")
+
+    fun findByStudentId(studentId: String): MemberEntity =
+        memberRepository.findByStudentId(studentId)
+            ?: throw IllegalArgumentException("Student $studentId not found")
+
+//    @Transactional
+//    fun create(dto: MemberCreateDTO, studentId: String?, role: MemberRole, type: MemberType): Long {
+//        if (memberRepository.findByUsername(dto.username) != null)
+//            throw IllegalArgumentException("Username already exists")
+//
+//        val entity = dto.toEntity(
+//            passwordEncoder.encode(dto.password)!!,
+//            studentId,
+//            role,
+//            type
+//        )
+//        return memberRepository.save(entity).id!!
+//    }
 
     @Transactional
-    fun createMember(dto: MemberCreateDTO): Long {
+    fun create(dto: MemberCreateDTO, memberRole: MemberRole): Long {
         if (memberRepository.findByUsername(dto.username) != null)
-            throw IllegalArgumentException("Member already exists")
+            throw IllegalArgumentException("Username already exists")
 
         val entity = dto.toEntity(
             passwordEncoder.encode(dto.password)!!,
-            MemberRole.MEMBER
+            memberRole
         )
         return memberRepository.save(entity).id!!
     }
 
     @Transactional
     fun updateMember(id: Long, dto: MemberUpdateDTO): MemberResponseDTO {
-        val member = memberRepository.findByIdOrThrow(id)
+        val member = findById(id)
 
+        dto.username?.let { member.username = it }
         dto.password?.let { member.password = passwordEncoder.encode(it)!! }
-        dto.name?.let { member.name = it }
-        dto.role?.let { member.role = it }
+        dto.github?.let { member.github = it }
+//        dto.name?.let { member.name = it }
+//        dto.role?.let { member.role = it }
 
         return memberRepository.save(member).toResponseDTO()
     }
 
     @Transactional
     fun deleteMember(id: Long) {
-        val member = memberRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Member not found") }
+        val member = findById(id)
         memberRepository.delete(member)
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
         val entity = memberRepository.findByUsername(username)
-            ?: throw IllegalStateException("User not found")
+            ?: throw IllegalStateException("Member not found")
         return MemberDetails(entity)
     }
 }

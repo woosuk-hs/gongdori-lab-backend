@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class MemberDetails(
-    private val member: MemberEntity
+    val member: MemberEntity
 ) : UserDetails {
 
     val id: Long
@@ -21,8 +21,8 @@ class MemberDetails(
     val type
         get() = member.type
 
-    val studentNumber
-        get() = member.studentNumber
+    val studentId
+        get() = member.studentId
 
     val createdAt
         get() = member.createdAt
