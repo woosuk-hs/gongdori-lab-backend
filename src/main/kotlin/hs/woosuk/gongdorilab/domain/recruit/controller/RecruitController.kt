@@ -34,4 +34,8 @@ class RecruitController(
         @RequestBody dto: RecruitUpdateDTO
     ): RecruitResponseDTO =
         recruitService.updateByStudentId(studentId, dto).toResponseDTO()
+
+    @DeleteMapping("/{studentId}")
+    fun delete(@PathVariable studentId: String) =
+        recruitService.deleteByStudentId(studentId)
 }

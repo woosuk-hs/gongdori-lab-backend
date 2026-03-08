@@ -50,16 +50,19 @@ class SecurityConfig(
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
                     .requestMatchers(HttpMethod.GET, "/recruit/{studentId}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/members").permitAll()
 
                     // 로그인 필요
                     .requestMatchers("/members/me").authenticated()
                     .requestMatchers(HttpMethod.PATCH, "/members/me").authenticated()
 
                     // 관리자 전용
-                    .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, "/recruit/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/recruit").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH, "/recruit/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/recruit/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH, "/members/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN")
 
                     .anyRequest().authenticated()
             }

@@ -16,6 +16,14 @@ spring:
     open-in-view: false
     show-sql: true
 
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: WARN
+    org.hibernate.orm.jdbc.error: WARN
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+
 # 각종 설정값 .donenv 대체
 AES_KEY: ${AES_KEY}
 

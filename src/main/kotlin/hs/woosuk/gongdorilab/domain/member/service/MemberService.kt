@@ -1,5 +1,6 @@
 package hs.woosuk.gongdorilab.domain.member.service
 
+import hs.woosuk.gongdorilab.domain.jwt.service.TokenService
 import hs.woosuk.gongdorilab.domain.member.dto.MemberCreateDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberResponseDTO
 import hs.woosuk.gongdorilab.domain.member.dto.MemberUpdateDTO
@@ -20,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class MemberService(
     private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val tokenService: TokenService
 ) : UserDetailsService {
 
     fun findAll(): List<MemberEntity> =
@@ -71,8 +73,9 @@ class MemberService(
         dto.username?.let { member.username = it }
         dto.password?.let { member.password = passwordEncoder.encode(it)!! }
         dto.github?.let { member.github = it }
-//        dto.name?.let { member.name = it }
-//        dto.role?.let { member.role = it }
+        dto.studentId?.let { member.studentId = it }
+        dto.name?.let { member.name = it }
+        dto.role?.let { member.role = it }
 
         return memberRepository.save(member).toResponseDTO()
     }
@@ -80,6 +83,7 @@ class MemberService(
     @Transactional
     fun deleteMember(id: Long) {
         val member = findById(id)
+        tokenService.deleteToken(member)
         memberRepository.delete(member)
     }
 

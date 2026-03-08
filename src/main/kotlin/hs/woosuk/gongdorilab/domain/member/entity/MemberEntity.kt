@@ -19,7 +19,7 @@ class MemberEntity(
 
     var password: String,
 
-    val studentId: String?,
+    var studentId: String?,
 
     var name: String,
 

@@ -65,4 +65,10 @@ class RecruitService(
         recruit.status = next
         return recruit
     }
+
+    @Transactional
+    fun deleteByStudentId(studentId: String) {
+        val recruit = findByStudentId(studentId)
+        recruitRepository.delete(recruit)
+    }
 }
