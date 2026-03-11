@@ -42,6 +42,9 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-impl:$jwtVersion")
     implementation("io.jsonwebtoken:jjwt-jackson:$jwtVersion")
+
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 kotlin {

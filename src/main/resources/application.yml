@@ -23,6 +23,7 @@ logging:
     org.hibernate.orm.jdbc.error: WARN
     org.springframework.security: WARN
     org.springframework.web: WARN
+#    io.netty: DEBUG
 
 # 각종 설정값 .donenv 대체
 AES_KEY: ${AES_KEY}
@@ -31,3 +32,6 @@ jwt:
   key: ${JWT_KEY}
   access: ${JWT_ACCESS}
   refresh: ${JWT_REFRESH}
+
+neis:
+  key: ${NEIS_KEY}

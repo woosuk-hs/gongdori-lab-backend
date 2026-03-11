@@ -2,6 +2,7 @@ package hs.woosuk.gongdorilab.domain.jwt.service
 
 import hs.woosuk.gongdorilab.domain.jwt.dto.TokenDTO
 import hs.woosuk.gongdorilab.domain.jwt.entity.TokenEntity
+import hs.woosuk.gongdorilab.domain.jwt.properties.JwtProperties
 import hs.woosuk.gongdorilab.domain.jwt.repository.TokenRepository
 import hs.woosuk.gongdorilab.domain.member.entity.MemberEntity
 import hs.woosuk.gongdorilab.domain.member.repository.MemberRepository
@@ -9,7 +10,6 @@ import hs.woosuk.gongdorilab.domain.member.security.MemberDetails
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import jakarta.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -23,24 +23,16 @@ import javax.crypto.spec.SecretKeySpec
 @Transactional(readOnly = true)
 class TokenService(
     private val tokenRepository: TokenRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val jwtProperties: JwtProperties
 ) {
-
-    @Value($$"${jwt.key}")
-    private lateinit var key: String
-
-    @Value($$"${jwt.access}")
-    private var accessValidTime: Long = 86400000
-
-    @Value($$"${jwt.refresh}")
-    private var refreshValidTime: Long = 604800000
 
     private lateinit var secretKey: SecretKey
 
     @PostConstruct
     fun init() {
         secretKey = SecretKeySpec(
-            key.toByteArray(StandardCharsets.UTF_8),
+            jwtProperties.key.toByteArray(StandardCharsets.UTF_8),
             Jwts.SIG.HS256.key().build().algorithm
         )
     }
@@ -50,14 +42,14 @@ class TokenService(
             .subject(member.username)
             .claim("id", member.id)
             .claim("role", member.role.name)
-            .expiration(Date(System.currentTimeMillis() + accessValidTime))
+            .expiration(Date(System.currentTimeMillis() + jwtProperties.access))
             .signWith(secretKey)
             .compact()
 
     private fun createRefreshToken(member: MemberEntity, rememberMe: Boolean): String {
         val validTime =
             if (rememberMe) 1000L * 60 * 60 * 24 * 30
-            else refreshValidTime
+            else jwtProperties.refresh
 
         return Jwts.builder()
             .subject(member.username)

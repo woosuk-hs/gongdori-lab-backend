@@ -52,6 +52,8 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.GET, "/recruit/{studentId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/members").permitAll()
 
+                    .requestMatchers(HttpMethod.GET, "/neis/**").permitAll()
+
                     // 로그인 필요
                     .requestMatchers("/members/me").authenticated()
                     .requestMatchers(HttpMethod.PATCH, "/members/me").authenticated()
