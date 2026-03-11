@@ -19,7 +19,7 @@ class CryptoService(
 
     init {
         // key.padEnd(16, '0').substring(0, 16).toByteArray()
-        val keyBytes = (aesKey)
+        val keyBytes = aesKey
             .padEnd(16, '0')
             .substring(0, 16)
             .toByteArray()
