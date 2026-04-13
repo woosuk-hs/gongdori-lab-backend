@@ -1,33 +1,32 @@
-# 더 이상 사용되지 않음
-
 version: "3.8"
-services:
-  backend:
-    build: .
-    container_name: backend-container
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-    depends_on:
-      - mysql
-    restart: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
 
-  mysql:
-    image: mysql:latest
-    container_name: mysql-container
+services:
+  app:
+    image: ${DOCKER_USERNAME}/gongdori-server:latest
+    container_name: gongdori-server-container
+    restart: unless-stopped
+
+    ports:
+      - "${APP_PORT}:8080"
+
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: Asia/Seoul
+      JAVA_OPTS: ${JAVA_OPTS}
+
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    restart: always
 
-volumes:
-  mysql-data:
+      AES_KEY: ${AES_KEY}
+      JWT_KEY: ${JWT_KEY}
+      JWT_ACCESS: ${JWT_ACCESS}
+      JWT_REFRESH: ${JWT_REFRESH}
+
+    networks:
+      - gongdori-network
+
+networks:
+  gongdori-network:
+    external: true

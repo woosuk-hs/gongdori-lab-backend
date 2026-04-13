@@ -51,6 +51,7 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.POST, "/recruit").permitAll()
                     .requestMatchers(HttpMethod.GET, "/recruit/{studentId}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/members").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/test/**").permitAll()
 
                     .requestMatchers(HttpMethod.GET, "/neis/**").permitAll()
 
